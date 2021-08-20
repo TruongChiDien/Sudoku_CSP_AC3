@@ -1,44 +1,33 @@
 from utils import number_of_conflicts
 
 """
-Most Constrained Variable (MRV) heuristic
-
-definitions & explanations @ https://www.cs.unc.edu/~lazebnik/fall10/lec08_csp2.pdf
-returns the variable with the fewest possible values remaining
+Chọn cell có miền giá trị nhỏ nhất (MRV) heuristic
 """
 def select_unassigned_variable(assignment, sudoku):
 
     unassigned = []
 
-    # for each of the cells
+    # Chọn ra tập các cell chưa được gán giá trị
     for cell in sudoku.cells:
 
-        # if the cell is not in the assignment
         if cell not in assignment:
 
-            # add it
             unassigned.append(cell)
 
-    # the criterion here is the length of the possibilities (MRV)
+    # Hàm lấy ra độ lớn của miền giá trị
     criterion = lambda cell: len(sudoku.possibilities[cell])
 
-    # we return the variable with the fewest possible values remaining
+    # Trả về cell có miền giá trị nhỏ nhất
     return min(unassigned, key=criterion)
 
 """
-Least Constraining Value (LCV) heuristic
-
-@ https://cs.stackexchange.com/questions/47870/what-is-least-constraining-value
-from "Artificial Intelligence: A Modern Approach (Russel & Norvig)"'s definition:
-prefers the value that rules out the fewest choices for the neighboring variables in the constraint graph.
+Hàm sắp xếp các giá trị theo thứ tự ít ảnh hưởng ràng buộc nhất (LCV) heuristic
 """
 def order_domain_values(sudoku, cell):
 
-    # since we are looking for the least constraining value
-    # contained in [1, 2, 3, ..., 8, 9], smallest case possible is length of 1
+    # Nếu miền giá trị chỉ có 1 giá trị thì lấy luôn
     if len(sudoku.possibilities[cell]) == 1:
         return sudoku.possibilities[cell]
 
-    # we want to sort based on the number of conflicts
     criterion = lambda value: number_of_conflicts(sudoku, cell, value)
     return sorted(sudoku.possibilities[cell], key=criterion)

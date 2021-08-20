@@ -2,142 +2,116 @@ import sys
 import math
 
 """
-is_different
-checks if two cells are the same
+Hàm kiểm tra 2 giá trị
 """
 def is_different(cell_i, cell_j):
     result = cell_i != cell_j
     return result
 
 """
-number of conflicts
-counts the number of conflicts for a cell with a specific value
+Hàm đếm số lượng xung đột ràng buộc của 1 cell khi được gán 1 giá trị nhất định
 """
 def number_of_conflicts(sudoku, cell, value):
 
     count = 0
 
-    # for each of the cells that can be in conflict with cell
+    # Duyệt qua các cell liên quan
     for related_c in sudoku.related_cells[cell]:
 
-        # if the value of related_c is not found yet AND the value we look for exists in its possibilities
-        if len(sudoku.possibilities[related_c]) > 1 and value in sudoku.possibilities[related_c]:
-            
-            # then a conflict exists
+        if value in sudoku.possibilities[related_c]:
             count += 1
 
     return count
 
 """
-is_consistent
-
-checks if the value is consistent in the assignments
+Hàm kiểm tra khi gán 1 giá trị cụ thể cho 1 cell thì có gây ra xung đột ràng buộc hay không
 """
 def is_consistent(sudoku, assignment, cell, value):
 
     is_consistent = True
 
-    # for each tuple of cell/value in assignment
+    # Duyệt qua tất cả các cell đã được gán giá trị
     for current_cell, current_value in assignment.items():
 
-        # if the values are the equal and the cells are related to each other
+        # Nếu cell đó liên quan đến cell hiện tại và được gán cùng giá trị
         if current_value == value and current_cell in sudoku.related_cells[cell]:
-
-            # then cell is not consistent
             is_consistent = False
             break
     
-    # else is it consistent
     return is_consistent
 
 """
-assign
-add {cell: val} to assignment
-inspired by @ http://aima.cs.berkeley.edu/python/csp.html
+Hàm gán giá trị cụ thể cho 1 cell và cắt bỏ miền giá trị của các cell liên quan
 """
 def assign(sudoku, cell, value, assignment):
     
-    # add {cell: val} to assignment
     assignment[cell] = value
-
-    if sudoku.possibilities:
-
-        # forward check
-        forward_check(sudoku, cell, value, assignment)
+    
+    return forward_check(sudoku, cell, value, assignment)
 
 """
-unassign
-remove {cell: val} from assignment (backtracking)
-inspired by @ http://aima.cs.berkeley.edu/python/csp.html
+Hàm tháo giá trị của 1 cell và trả về các miền giá trị đã bị cắt bỏ của các cell liên quan
 """
 def unassign(sudoku, cell, assignment):
 
-    # if the cell is in assignment
     if cell in assignment:
 
-        # for coord, each value in pruned
+        # Duyệt qua tất cả các cell và giá trị đã bị cắt bỏ khi cell này được gán
         for (coord, value) in sudoku.pruned[cell]:
 
-            # add it to the possibilities
+            # trả lại về miền giá trị của nó
             sudoku.possibilities[coord].append(value)
 
-        # reset pruned for the cell
         sudoku.pruned[cell] = []
 
-        # and delete its assignment
+        # Xóa gán
         del assignment[cell]
 
 """
-forward check
-domain reduction for the current assignment
-idea based on @ https://github.com/ishpreet-singh/Sudoku
+Hàm cắt bỏ miền giá trị của các cell liên quan và phát hiện phép gán không hợp lệ
 """
 def forward_check(sudoku, cell, value, assignment):
 
-    # for each related cell of cell
+    # Duyệt qua tất cả cell liên quan
     for related_c in sudoku.related_cells[cell]:
 
-        # if this cell is not in assignment
+        # Nếu cell đó chưa được gán
         if related_c not in assignment:
 
-            # and if the value remains in the possibilities
+            # Nếu giá trị được gán có trong miền giá trị của cell liên quan
             if value in sudoku.possibilities[related_c]:
 
-                # removed it from the possibilities
+                # Cắt bỏ giá trị đó khỏi miền giá trị của cell liên quan
                 sudoku.possibilities[related_c].remove(value)
 
-                # and add it to pruned
+                # Thêm vào dict cắt bỏ của cell
                 sudoku.pruned[cell].append((related_c, value))
-                
+
+                # Phát hiện phép gán không hợp lệ
+                if sudoku.possibilities[related_c] == []:
+                    return False
+
+    return True           
 
 """
-fetch sudokus
-fetches sudokus based on user's input
+Xây dựng sudoku từ một chuỗi
 """
 def fetch_sudokus(input):
 
-        DEFAULT_SIZE = 81
+        # Tìm bậc của sudoku (bậc bằng với độ dài 1 cạnh của các ô vuông)
+        n = math.sqrt(math.sqrt(len(input.split()))) # Căn bậc 4
 
-        # if the input is an multiple of DEFAULT_SIZE=81
-        n = math.sqrt(math.sqrt(len(input.split()))) # square root 4
+        # Nếu bậc không hợp lệ
         if (n != int(n)):
-        
-        # if (len(input) % DEFAULT_SIZE) != 0:
-            print("Error : the len of string must be a integer power of 4")
+            print("Error : the element of string must be an integer power of 4")
             sys.exit()
         
         else:
-            n = int(n)
-            formatted_input = input.replace("X", "0").replace("#", "0").replace("@", "0")
+            return input, n
 
-            # if not formatted_input.isdigit() or (0 > any(list(map(int, input.split()))) > n):
-
-            #         print("Error : only the following characters are allowed: Numbers, 'X', '#' and '@'")
-            #         sys.exit()
-            
-            # else:
-            return formatted_input, n
-
+'''
+Hàm in ra Sudoku trước khi giải
+'''
 def print_grid(grid, n):
 
         output = ""
@@ -151,8 +125,6 @@ def print_grid(grid, n):
             elif n <100:
                 output += "[{0:02d}]".format(value)
 
-            # if we reach the end of the line,
-            # make a new line on display
             if count >= n:
                 count = 0
                 output += "\n"

@@ -1,9 +1,8 @@
 from utils import is_different
 
 """
-Constraint Propagation with AC-3
-pseudo code found @ https://en.wikipedia.org/wiki/AC-3_algorithm
-python implementation inspired by http://aima.cs.berkeley.edu/python/csp.html
+Lan truyền ràng buộc với AC-3
+Mã giả tại @ https://en.wikipedia.org/wiki/AC-3_algorithm
 """
 def AC3(csp, queue=None):
 
@@ -16,7 +15,7 @@ def AC3(csp, queue=None):
 
         if remove_inconsistent_values(csp, xi, xj): 
 
-            # if a cell has 0 possibilities, sudoku has no solution
+            # Nếu có cell nào không còn giá trị thì bài toán không có lời giải
             if len(csp.possibilities[xi]) == 0:
                 return False
             
@@ -27,9 +26,7 @@ def AC3(csp, queue=None):
     return True
 
 """
-remove_inconsistent_values
-
-returns true if a value is removed
+Loại bỏ các giá trị không nhất quán tại 1 cell liền kề của cell hiện tại
 """
 def remove_inconsistent_values(csp, cell_i, cell_j):
 

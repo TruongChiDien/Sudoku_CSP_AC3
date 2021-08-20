@@ -2,36 +2,38 @@ from heuristics import select_unassigned_variable, order_domain_values
 from utils import is_consistent, assign, unassign
 
 """
-Backtracking Algorithm
-pseudo code found @ https://sandipanweb.files.wordpress.com/2017/03/im31.png
+Thuật toán backtracking
+
 """
 def recursive_backtrack_algorithm(assignment, sudoku):
 
-    # if assignment is complete then return assignment
+    # Nếu tất cả các cell đã được gán giá trị thì kết thúc thuật toán
     if len(assignment) == len(sudoku.cells):
         return assignment
 
-    # var = select-unassigned-variables(csp)
+    # chọn cell còn ít giá trị nhất (MRV)
     cell = select_unassigned_variable(assignment, sudoku)
 
-    # for each value in order-domain-values(csp, var)
+    # Chọn giá trị ít ảnh hưởng ràng buộc nhất (LCV)
     for value in order_domain_values(sudoku, cell):
 
-        # if value is consistent with assignment
+        # Kiếm tra xem giá trị có ảnh hưởng ràng buộc hay không
         if is_consistent(sudoku, assignment, cell, value):
 
-            # add {cell = value} to assignment
-            assign(sudoku, cell, value, assignment)
+            # Gán giá trị và cắt bỏ miền giá trị của các ô liền kề
+            check = assign(sudoku, cell, value, assignment)
 
-            # result = backtrack(assignment, csp)
+            # Nếu sau khi lượt bỏ có cell mất hết giá trị trong miền giá trị
+            if not check:
+                unassign(sudoku, cell, assignment)
+                return False
+
             result = recursive_backtrack_algorithm(assignment, sudoku)
 
-            # if result is not a failure return result
             if result:
                 return result
 
-            # remove {cell = value} from assignment
+            # Nếu gán không cho ra kết quả thì trả lại như ban đầu
             unassign(sudoku, cell, assignment)
    
-    # return failure
     return False
