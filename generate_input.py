@@ -1,7 +1,7 @@
 import itertools
 import math
 from heuristics import select_unassigned_variable, order_domain_values
-from utils import is_consistent
+from utils import assign, is_consistent, unassign
 import random
 
 '''
@@ -9,35 +9,54 @@ Tương tự như hàm backtracking nhưng có thêm tỉ lệ giữa việc gá
 '''
 def recursive_backtrack_algorithm(assignment, sudoku, rate):
 
-    if len(assignment) == len(sudoku.cells):
-        return assignment
+    for cell in sudoku.cells:
+        if random.random() > rate:
+            assignment[cell] = 0
 
-    cell = select_unassigned_variable(assignment, sudoku)
+        else:
+            assigned = False
+            for value in order_domain_values(sudoku, cell):
+                if is_consistent(sudoku, assignment, cell, value):
+                    if not assign(sudoku, cell, value, assignment):
+                        unassign(sudoku, cell, assignment)
+                        assigned = False
+                    else:
+                        assigned = True
+                        break
+                    
+            if assigned == False:
+                assignment[cell] = 0
+                
 
-    if random.random() <= rate:
-        for value in sudoku.possibilities[cell]:
+    # if len(assignment) == len(sudoku.cells):
+    #     return assignment
 
-            if is_consistent(sudoku, assignment, cell, value):
+    # cell = select_unassigned_variable(assignment, sudoku)
 
-                assignment[cell] = value
+    # if random.random() <= rate:
+    #     for value in sudoku.possibilities[cell]:
 
-                result = recursive_backtrack_algorithm(assignment, sudoku, rate)
+    #         if is_consistent(sudoku, assignment, cell, value):
 
-                if result:
-                    return result
+    #             assignment[cell] = value
 
-                del assignment[cell]
-        return False
+    #             result = recursive_backtrack_algorithm(assignment, sudoku, rate)
 
-    else:
-        assignment[cell] = 0
+    #             if result:
+    #                 return result
 
-        result = recursive_backtrack_algorithm(assignment, sudoku, rate)
+    #             del assignment[cell]
+    #     return False
 
-        if result:
-            return result
+    # else:
+    #     assignment[cell] = 0
+
+    #     result = recursive_backtrack_algorithm(assignment, sudoku, rate)
+
+    #     if result:
+    #         return result
    
-    return False
+    # return False
 
 
 '''
@@ -75,6 +94,10 @@ class Sudoku_Gen_Input:
             self.related_cells = dict()
             self.related_cells = self.generate_related_cells()
 
+            # Dict các gias trị cắt bỏ liên quan đến mỗi cell
+            self.pruned = dict()
+            self.pruned = {v: list() for v in self.cells}
+
             # Khởi tạo dict lưu giá trị được gán cho mỗi cell
             assignment = {}
 
@@ -105,8 +128,8 @@ class Sudoku_Gen_Input:
         possibilities = dict()
 
         for cell in self.cells:
-                possibilities[cell] = list(range(1, self.n+1))
-                random.shuffle(possibilities[cell])
+            possibilities[cell] = list(range(1, self.n+1))
+            # random.shuffle(possibilities[cell])
 
         return possibilities
 

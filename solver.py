@@ -44,8 +44,11 @@ def solve(grid, index, total, n):
         # Nếu chưa thì tiếp tục dùng backtracking
         else:
 
-            print("{}/{} : AC3 finished, Backtracking starting...".format(index,total))
+            choice = input("{}/{} : AC3 finished, you wanna run backtracking? (Y/N)".format(index,total))
+            if choice == 'N':
+                return
 
+            print('Backtracking starting...')
             assignment = {}
 
             # Gán các giá trị đã biết
@@ -80,11 +83,13 @@ if __name__ == "__main__":
     parser.add_argument('--level', type=float, default=0.2, help='ratio of position have value (default: %(default)s)')
     args = parser.parse_args()
     
-    if args.edge > 10:
-        print('Edge is too large, must be between 2 and 10')
+    if args.edge > 6:
+        print('Edge is too large, must be between 2 and 6')
+        exit(0)
 
-    if args.level >= 0.4:
+    if args.level > 0.4:
         print('Ratio is too large, must be between 0.1 and 0.4')
+        exit(0)
 
     samples = Sudoku_Gen_Input(args.edge**2, args.sample, args.level)
 

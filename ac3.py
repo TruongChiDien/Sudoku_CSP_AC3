@@ -11,14 +11,17 @@ def AC3(csp, queue=None):
 
     while queue:
 
+        #Lấy ra 1 cung ràng buộc 2 ngôi để kiểm tra miền giá trị
         (xi, xj) = queue.pop(0)
 
+        # Nếu có lượt bỏ trong miền giá trị
         if remove_inconsistent_values(csp, xi, xj): 
 
-            # Nếu có cell nào không còn giá trị thì bài toán không có lời giải
+            # Nếu cell bị lượt bỏ hết giá trị trong miền giá trị
             if len(csp.possibilities[xi]) == 0:
                 return False
             
+            # Thêm lại tất cả các ràng buộc có cell_i nằm ở đầu cung ràng buộc
             for Xk in csp.related_cells[xi]:
                 if Xk != xi:
                     queue.append((Xk, xi))
@@ -32,15 +35,15 @@ def remove_inconsistent_values(csp, cell_i, cell_j):
 
     removed = False
 
-    # for each possible value remaining for the cell_i cell
+    # Duyệt qua miền giá trị của cell phía đuôi của cung ràng buộc
     for value in csp.possibilities[cell_i]:
 
-        # if cell_i=value is in conflict with cell_j=poss for each possibility
+        # Nếu không tồn tại giá trị nào trong miền giá trị cell phía đầu cung thỏa ràng buộc
         if not any([is_different(value, poss) for poss in csp.possibilities[cell_j]]):
             
-            # then remove cell_i=value
+            # Loại giá trị này ra khỏi miền giá trị của cell_i
             csp.possibilities[cell_i].remove(value)
             removed = True
 
-    # returns true if a value has been removed
+    # Trả về True nếu có remove
     return removed
