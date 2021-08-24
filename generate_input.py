@@ -7,7 +7,7 @@ import random
 '''
 Tương tự như hàm backtracking nhưng có thêm tỉ lệ giữa việc gán giá trị và gán = 0
 '''
-def recursive_backtrack_algorithm(assignment, sudoku, rate):
+def input_gen(assignment, sudoku, rate):
 
     for cell in sudoku.cells:
         if random.random() > rate:
@@ -27,36 +27,6 @@ def recursive_backtrack_algorithm(assignment, sudoku, rate):
             if assigned == False:
                 assignment[cell] = 0
                 
-
-    # if len(assignment) == len(sudoku.cells):
-    #     return assignment
-
-    # cell = select_unassigned_variable(assignment, sudoku)
-
-    # if random.random() <= rate:
-    #     for value in sudoku.possibilities[cell]:
-
-    #         if is_consistent(sudoku, assignment, cell, value):
-
-    #             assignment[cell] = value
-
-    #             result = recursive_backtrack_algorithm(assignment, sudoku, rate)
-
-    #             if result:
-    #                 return result
-
-    #             del assignment[cell]
-    #     return False
-
-    # else:
-    #     assignment[cell] = 0
-
-    #     result = recursive_backtrack_algorithm(assignment, sudoku, rate)
-
-    #     if result:
-    #         return result
-   
-    # return False
 
 
 '''
@@ -102,7 +72,7 @@ class Sudoku_Gen_Input:
             assignment = {}
 
             # Sinh Sudoku bằng backtracking
-            recursive_backtrack_algorithm(assignment, self, rate)
+            input_gen(assignment, self, rate)
 
             temp = []
             for cell in sorted(assignment):
