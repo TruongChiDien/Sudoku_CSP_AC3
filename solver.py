@@ -23,11 +23,10 @@ def solve(grid, index, total, n):
 
     # Chạy AC-3    
     print('\n-----Before AC-3')
-    num_arc = 0
+    num_arc = len(sudoku.binary_constraints)
     tolal_val = 0
     largest_domain = 0
     for cell in sudoku.possibilities:
-        num_arc += 1
         tolal_val += len(sudoku.possibilities[cell])
         largest_domain = max(len(sudoku.possibilities[cell]), largest_domain)
     print(f'Number of arcs: {num_arc}\nTotal values: {tolal_val}\nSize of largest domain: {largest_domain}')
@@ -37,11 +36,10 @@ def solve(grid, index, total, n):
     print('\n-----AC-3 take {} ms'.format(time.time() - start))
     
     print('\n-----After AC-3')
-    num_arc = 0
+    num_arc = len(sudoku.binary_constraints)
     tolal_val = 0
     largest_domain = 0
     for cell in sudoku.possibilities:
-        num_arc += 1
         tolal_val += len(sudoku.possibilities[cell])
         largest_domain = max(len(sudoku.possibilities[cell]), largest_domain)
     print(f'Number of arcs: {num_arc}\nnTotal values: {tolal_val}\nSize of largest domain: {largest_domain}')
