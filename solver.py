@@ -31,62 +31,63 @@ def solve(grid, index, total, n):
         largest_domain = max(len(sudoku.possibilities[cell]), largest_domain)
     print(f'Number of arcs: {num_arc}\nTotal values: {tolal_val}\nSize of largest domain: {largest_domain}')
 
-    start = time.time()
-    AC3_result = AC3(sudoku)
-    print('\n-----AC-3 take {} ms'.format(time.time() - start))
-    
-    print('\n-----After AC-3')
-    num_arc = len(sudoku.binary_constraints)
-    tolal_val = 0
-    largest_domain = 0
-    for cell in sudoku.possibilities:
-        tolal_val += len(sudoku.possibilities[cell])
-        largest_domain = max(len(sudoku.possibilities[cell]), largest_domain)
-    print(f'Number of arcs: {num_arc}\nnTotal values: {tolal_val}\nSize of largest domain: {largest_domain}')
+    choice = input('Do you want to run AC-3? (y/n)')
+    if choice == 'y':
+        start = time.time()
+        AC3_result = AC3(sudoku)
+        print('\n-----AC-3 take {} s'.format(time.time() - start))
+        
+        print('\n-----After AC-3')
+        num_arc = len(sudoku.binary_constraints)
+        tolal_val = 0
+        largest_domain = 0
+        for cell in sudoku.possibilities:
+            tolal_val += len(sudoku.possibilities[cell])
+            largest_domain = max(len(sudoku.possibilities[cell]), largest_domain)
+        print(f'Number of arcs: {num_arc}\nnTotal values: {tolal_val}\nSize of largest domain: {largest_domain}')
 
-    # Sudoku không có lời giải
-    if not AC3_result:
-        print("{}/{} : this sudoku has no solution".format(index, total))
+        # Sudoku không có lời giải
+        if not AC3_result:
+            print("{}/{} : this sudoku has no solution".format(index, total))
 
+
+    # Kiểm tra xem Sudoku đã được giải chưa
+    if sudoku.isFinished():
+
+        print("{}/{} : AC3 was enough to solve this sudoku!".format(index, total))
+        print("{}/{} : Result: \n{}".format(index, total, sudoku))
+
+    # Nếu chưa thì tiếp tục dùng backtracking
     else:
 
-        # Kiểm tra xem Sudoku đã được giải chưa
-        if sudoku.isFinished():
+        choice = input(
+            "{}/{} : AC3 finished, you wanna run backtracking? (y/n)".format(index, total))
+        if choice == 'n':
+            return
 
-            print("{}/{} : AC3 was enough to solve this sudoku!".format(index, total))
-            print("{}/{} : Result: \n{}".format(index, total, sudoku))
+        print('Backtracking starting...')
+        assignment = {}
 
-        # Nếu chưa thì tiếp tục dùng backtracking
-        else:
+        # Gán các giá trị đã biết
+        for cell in sudoku.cells:
 
-            choice = input(
-                "{}/{} : AC3 finished, you wanna run backtracking? (Y/N)".format(index, total))
-            if choice == 'N':
-                return
+            if len(sudoku.possibilities[cell]) == 1:
+                assignment[cell] = sudoku.possibilities[cell][0]
 
-            print('Backtracking starting...')
-            assignment = {}
+        # Backtracking
+        start = time.time()
+        assignment = recursive_backtrack_algorithm(assignment, sudoku)
+        print('Backtracking take {} s'.format(time.time() - start))
 
-            # Gán các giá trị đã biết
-            for cell in sudoku.cells:
+        if not assignment:
+            print("{}/{} : No solution exists".format(index, total))
+            return
 
-                if len(sudoku.possibilities[cell]) == 1:
-                    assignment[cell] = sudoku.possibilities[cell][0]
+        # Gán giá trị cell lại cho miền giá trị của nó
+        for cell in sudoku.possibilities:
+            sudoku.possibilities[cell] = assignment[cell]
 
-            # Backtracking
-            start = time.time()
-            assignment = recursive_backtrack_algorithm(assignment, sudoku)
-            print('Backtracking take {} ms'.format(time.time() - start))
-
-            if not assignment:
-                print("{}/{} : No solution exists".format(index, total))
-                return
-
-            # Gán giá trị cell lại cho miền giá trị của nó
-            for cell in sudoku.possibilities:
-                sudoku.possibilities[cell] = assignment[cell]
-
-            print("{}/{} : Result: \n{}".format(index, total, sudoku))
+        print("{}/{} : Result: \n{}".format(index, total, sudoku))
 
 
 if __name__ == "__main__":
