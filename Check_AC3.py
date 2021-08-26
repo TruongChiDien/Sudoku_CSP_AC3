@@ -1,5 +1,5 @@
 from sudoku import Sudoku
-from generate_input import Gen_Input_Random
+from generate_input import Sudoku_Gen_Input
 import argparse
 from ac3 import AC3
 
@@ -29,43 +29,18 @@ def order_unassigned_variable(sudoku):
 
 
 
-# def generate_possibilities(sudoku):
-
-#     possibilities = dict()
-
-#     for cell in order_unassigned_variable(sudoku):
-#         possibilities[cell] = []
-
-#         for value in range(1, sudoku.n + 1):
-#             consistence = True
-
-#             for related_c in sudoku.related_cells[cell]:
-
-#                 if len(sudoku.possibilities[related_c]) == 1 and sudoku.possibilities[related_c][0] == value:
-#                     consistence = False
-#                     break
-            
-#             if consistence == True:
-#                 possibilities[cell].append(value)
-
-#     for cell in sudoku.cells:
-#         if len(sudoku.possibilities[cell]) == 1:
-#             possibilities[cell] = sudoku.possibilities[cell]
-
-#     return possibilities
-
 def generate_possibilities(sudoku):
+
     possibilities = dict()
 
-    for cell in sudoku.cells:
-        if len(sudoku.possibilities[cell]) == 1:
-            possibilities[cell] = sudoku.possibilities[cell]
-            continue
-
+    for cell in order_unassigned_variable(sudoku):
         possibilities[cell] = []
-        for value in range(1, sudoku.n+1):
+
+        for value in range(1, sudoku.n + 1):
             consistence = True
+
             for related_c in sudoku.related_cells[cell]:
+
                 if len(sudoku.possibilities[related_c]) == 1 and sudoku.possibilities[related_c][0] == value:
                     consistence = False
                     break
@@ -73,33 +48,58 @@ def generate_possibilities(sudoku):
             if consistence == True:
                 possibilities[cell].append(value)
 
+    for cell in sudoku.cells:
+        if len(sudoku.possibilities[cell]) == 1:
+            possibilities[cell] = sudoku.possibilities[cell]
+
     return possibilities
+
+# def generate_possibilities(sudoku):
+#     possibilities = dict()
+
+#     for cell in sudoku.cells:
+#         if len(sudoku.possibilities[cell]) == 1:
+#             possibilities[cell] = sudoku.possibilities[cell]
+#             continue
+
+#         possibilities[cell] = []
+#         for value in range(1, sudoku.n+1):
+#             consistence = True
+#             for related_c in sudoku.related_cells[cell]:
+#                 if len(sudoku.possibilities[related_c]) == 1 and sudoku.possibilities[related_c][0] == value:
+#                     consistence = False
+#                     break
+            
+#             if consistence == True:
+#                 possibilities[cell].append(value)
+
+#     return possibilities
 
         
 
 
 
 if __name__ == "__main__":
-    # parser = argparse.ArgumentParser(description='Solve a Sudoku with CSP')
-    # parser.add_argument('--edge', type=int, default=3,
-    #                     help='Edge of a square, if edge = 3 then Sudoku have size 9*9')
-    # parser.add_argument('--sample', type=int, default=10,
-    #                     help='Number of sample')
-    # parser.add_argument('--level', type=float, default=0.2,
-    #                     help='ratio of position have value (default: %(default)s)')
-    # args = parser.parse_args()
+    parser = argparse.ArgumentParser(description='Solve a Sudoku with CSP')
+    parser.add_argument('--edge', type=int, default=3,
+                        help='Edge of a square, if edge = 3 then Sudoku have size 9*9')
+    parser.add_argument('--sample', type=int, default=10,
+                        help='Number of sample')
+    parser.add_argument('--level', type=float, default=0.2,
+                        help='ratio of position have value (default: %(default)s)')
+    args = parser.parse_args()
 
-    # sample = Gen_Input_Random(args.edge**2, 1, args.level)
+    sample = Sudoku_Gen_Input(args.edge**2, 1, args.level).grid
 
-    # Input = Sudoku(sample[0], args.edge**2)
+    Input = Sudoku(sample[0], args.edge**2)
 
-    # Output = Sudoku(sample[0], args.edge**2)
+    Output = Sudoku(sample[0], args.edge**2)
 
-    sample = Gen_Input_Random(9, 1, 0.2)
+    # sample = Sudoku_Gen_Input(9, 1, 0.2).grid
 
-    Input = Sudoku(sample[0], 9)
+    # Input = Sudoku(sample[0], 9)
 
-    Output = Sudoku(sample[0], 9)
+    # Output = Sudoku(sample[0], 9)
 
     Output.possibilities = generate_possibilities(Output)
 
