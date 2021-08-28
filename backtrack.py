@@ -1,12 +1,13 @@
 from heuristics import select_unassigned_variable, order_domain_values
 from utils import is_consistent, assign, unassign
 
-"""
-Thuật toán backtracking
 
-"""
 def recursive_backtrack_algorithm(assignment, sudoku):
+    """
+    Thuật toán backtracking
 
+    """
+    
     # Nếu tất cả các cell đã được gán giá trị thì kết thúc thuật toán
     if len(assignment) == len(sudoku.cells):
         return assignment

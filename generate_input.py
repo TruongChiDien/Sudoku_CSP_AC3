@@ -4,10 +4,11 @@ from heuristics import select_unassigned_variable, order_domain_values
 from utils import assign, is_consistent, unassign
 import random
 
-'''
-Tương tự như hàm backtracking nhưng có thêm tỉ lệ giữa việc gán giá trị và gán = 0
-'''
+
 def input_gen(assignment, sudoku, rate):
+    '''
+    Tương tự như hàm backtracking nhưng có thêm tỉ lệ giữa việc gán giá trị và gán = 0
+    '''
 
     for cell in sudoku.cells:
         if random.random() > rate:
@@ -29,11 +30,13 @@ def input_gen(assignment, sudoku, rate):
                 
 
 
-'''
-Lớp sinh input, có thể sinh ra input không có lời giải
-Tương tự như lớp Sudoku
-'''
+
 class Sudoku_Gen_Input:
+    '''
+    Lớp sinh input, có thể sinh ra input không có lời giải
+    Tương tự như lớp Sudoku
+    '''
+    
     def  __init__(self, order=9, sample=5, rate=0.2) -> None:
 
         self.grid = ['']*sample

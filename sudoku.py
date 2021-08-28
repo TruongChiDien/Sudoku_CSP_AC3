@@ -31,10 +31,11 @@ class Sudoku:
         self.pruned = {v: list() if game[i] == 0 else [(v, game[i])] for i, v in enumerate(self.cells)}
 
 
-    """
-    Hàm sinh tọa độ cho các cell (cột, dòng)
-    """
+    
     def generate_coords(self):
+        """
+        Hàm sinh tọa độ cho các cell (cột, dòng)
+        """
 
         all_cells_coords = []
 
@@ -48,10 +49,11 @@ class Sudoku:
 
         return all_cells_coords
 
-    """
-    Hàm sinh miền giá trị cho mỗi cell
-    """
+
     def generate_possibilities(self, grid_as_list):
+        """
+        Hàm sinh miền giá trị cho mỗi cell
+        """
 
         possibilities = dict()
 
@@ -66,11 +68,12 @@ class Sudoku:
 
         return possibilities
 
-    """
-    Hàm sinh tập các ràng buộc dòng ,cột, ô vuông
-    """
+
     def generate_rules_constraints(self):
-        
+        """
+        Hàm sinh tập các ràng buộc dòng ,cột, ô vuông
+        """
+
         row_constraints = []
         column_constraints = []
         square_constraints = []
@@ -108,10 +111,12 @@ class Sudoku:
 
         return row_constraints + column_constraints + square_constraints # [[r1], [r2], ..., [square(sqrt(n))]]
 
-    """
-    Sinh tập ràng buộc 2 ngôi từ tập ràng buộc
-    """
+
     def generate_binary_constraints(self, rule_constraints):
+        """
+        Sinh tập ràng buộc 2 ngôi từ tập ràng buộc
+        """
+
         generated_binary_constraints = list()
 
         # Duyệt qua từng tập ràng buộc [ràng buộc dòng 1], [ràng buộc dòng 2], ...
@@ -132,10 +137,11 @@ class Sudoku:
 
         return generated_binary_constraints
 
-    """
-    Sinh dict tập các cell liên quan cho mỗi cell
-    """
+
     def generate_related_cells(self):
+        """
+        Sinh dict tập các cell liên quan cho mỗi cell
+        """
         related_cells = dict()
 
         # Duyệt qua n*n cell
@@ -149,22 +155,24 @@ class Sudoku:
 
         return related_cells
 
-    """
-    Hàm kiểm tra Sudoku đã được giải chưa
-    Nếu tất cả các cell chỉ có 1 giá trị duy nhất thì Sudoku đã được giải
-    """
+    
     def isFinished(self):
+        """
+        Hàm kiểm tra Sudoku đã được giải chưa
+        Nếu tất cả các cell chỉ có 1 giá trị duy nhất thì Sudoku đã được giải
+        """
         for coords, possibilities in self.possibilities.items():
             if len(possibilities) > 1:
                 return False
         
         return True
     
-    """
-    Hàm trả về định dạng bảng Sudoku
-    """
+    
     def __str__(self):
-
+        """
+        Hàm trả về định dạng bảng Sudoku
+        """
+        
         output = ""
         count = 1
         

@@ -1,10 +1,11 @@
 from utils import is_different
 
-"""
-Lan truyền ràng buộc với AC-3
-Mã giả tại @ https://en.wikipedia.org/wiki/AC-3_algorithm
-"""
+
 def AC3(csp, queue=None):
+    """
+    Lan truyền ràng buộc với AC-3
+    Mã giả tại @ https://en.wikipedia.org/wiki/AC-3_algorithm
+    """
 
     if queue == None:
         queue = list(csp.binary_constraints)
@@ -28,11 +29,12 @@ def AC3(csp, queue=None):
                     
     return True
 
-"""
-Loại bỏ các giá trị không nhất quán tại 1 cell liền kề của cell hiện tại
-"""
-def remove_inconsistent_values(csp, cell_i, cell_j):
 
+def remove_inconsistent_values(csp, cell_i, cell_j):
+    """
+    Loại bỏ các giá trị không nhất quán tại 1 cell liền kề của cell hiện tại
+    """
+    
     removed = False
 
     # Duyệt qua miền giá trị của cell phía đuôi của cung ràng buộc

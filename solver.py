@@ -7,12 +7,13 @@ from generate_input import Sudoku_Gen_Input
 import time
 import copy
 
-"""
-Hàm giải Sudoku bằng AC-3 và backtracking
-"""
+
 
 
 def solve(grid, index, total, n):
+    """
+    Hàm giải Sudoku bằng AC-3 và backtracking
+    """
 
     print("\nSudoku {}/{} : \n{}".format(index, total, print_grid(grid, n)))
 
@@ -137,7 +138,7 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser(description='Solve a Sudoku with CSP')
     parser.add_argument('--edge', type=int, default=3,
                         help='Edge of a square, if edge = 3 then Sudoku have size 9*9')
-    parser.add_argument('--sample', type=int, default=3,
+    parser.add_argument('--sample', type=int, default=1,
                         help='Number of sample')
     parser.add_argument('--level', type=float, default=0.2,
                         help='ratio of position have value (default: %(default)s)')
@@ -147,8 +148,8 @@ if __name__ == "__main__":
         print('Edge is too large, must be between 2 and 6')
         exit(0)
 
-    if args.level > 0.4:
-        print('Ratio is too large, must be between 0.1 and 0.4')
+    if args.level > 0.3:
+        print('Ratio is too large, must be between 0.1 and 0.3')
         exit(0)
 
     samples = Sudoku_Gen_Input(args.edge**2, args.sample, args.level)
